@@ -49,12 +49,11 @@ export default function LendingManagement() {
   const [allReaders, setAllReaders] = useState<Reader[]>([]);
   const [dueDate, setDueDate] = useState("");
 
-
+  // Edit modal states
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<LendingPopulated | null>(null);
-  const [newStatus, setNewStatus] = useState("");
-
-
+  const [newStatus, setNewStatus] = useState<LendingStatus>('borrowed');
+  type LendingStatus = LendingRecord['status'];
 
 
   useEffect(() => {
@@ -111,29 +110,41 @@ export default function LendingManagement() {
     }
   };
 
-  const handleUpdateStatus = async () => {
-    if (!selectedRecord) {
-      alert("No lending record selected.");
-      return;
-    }
+const handleUpdateStatus = async () => {
+  if (!selectedRecord) {
+    alert("No lending record selected.");
+    return;
+  }
 
-    try {
-      const response = await updateLending(selectedRecord._id, {
-        status: newStatus,
-      });
+  if (!newStatus) {
+    alert("Please select a valid status.");
+    return;
+  }
 
-      if (response) {
-        alert("Lending status updated successfully!");
-        setIsEditModalOpen(false);
-        fetchAllLendingRecords();
-      } else {
-        alert("Failed to update lending status");
-      }
-    } catch (error) {
-      console.error("Error updating status:", error);
-      alert("Something went wrong. Please try again.");
+  try {
+    const response = await updateLending(selectedRecord._id, {
+      bookId: selectedRecord.bookId._id,
+      readerId: selectedRecord.readerId._id,
+      borrowedDate: selectedRecord.borrowedDate,
+      dueDate: selectedRecord.dueDate,
+      returnedDate: selectedRecord.returnedDate,
+      status: newStatus,
+    } satisfies Omit<LendingRecord, "_id">);
+
+    if (response) {
+      alert("Lending status updated successfully!");
+      setIsEditModalOpen(false);
+      fetchAllLendingRecords();
+    } else {
+      alert("Failed to update lending status");
     }
-  };
+  } catch (error) {
+    console.error("Error updating status:", error);
+    alert("Something went wrong. Please try again.");
+  }
+};
+
+
 
 
   return (
@@ -141,7 +152,7 @@ export default function LendingManagement() {
         <h1 className="text-3xl font-bold text-gray-900">Lending Management</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
+          {/* Lend a Book Form */}
           <Card>
             <CardHeader>
               <CardTitle>Lend a Book</CardTitle>
@@ -335,16 +346,18 @@ export default function LendingManagement() {
                 <strong>Reader:</strong> {selectedRecord?.readerId.name}
               </div>
 
-              <Select value={newStatus} onValueChange={setNewStatus}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="borrowed">Borrowed</SelectItem>
-                  <SelectItem value="returned">Returned</SelectItem>
-                  <SelectItem value="overdue">Overdue</SelectItem>
-                </SelectContent>
-              </Select>
+              <Select value={newStatus} onValueChange={(value) => setNewStatus(value as LendingStatus)}>
+  <SelectTrigger>
+    <SelectValue placeholder="Choose status" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="borrowed">Borrowed</SelectItem>
+    <SelectItem value="returned">Returned</SelectItem>
+    <SelectItem value="overdue">Overdue</SelectItem>
+    <SelectItem value="pending">Pending</SelectItem>
+  </SelectContent>
+</Select>
+
             </div>
             <DialogFooter>
               <Button
