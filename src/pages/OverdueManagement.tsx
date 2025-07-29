@@ -143,7 +143,7 @@ export default function LendingTable() {
           </Button>
         </div>
 
-        {/* Table */}
+
         <Card>
           <CardHeader>
             <CardTitle>Library Lending Records</CardTitle>
