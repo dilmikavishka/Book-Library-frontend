@@ -13,6 +13,8 @@ export interface Book {
   isbn: string
   category: string;
   copiesAvailable: string;
+  coverColor?: string;
+  coverImage?: string; 
 }
 
 export interface LendingRecord {
@@ -24,8 +26,6 @@ export interface LendingRecord {
   returnedDate?: string
   status: 'borrowed' | 'returned' | 'overdue' | 'pending'
 }
-
-// for update lending type of id with states
 
 export interface LendingPopulated {
   _id: string
@@ -49,3 +49,12 @@ export interface OverdueRecord {
     daysOverdue: number
   }>
 }
+
+export interface DashboardData {
+  totalBooks: number;
+  totalReaders: number;
+  totalLendings: number;
+  overdueLendings: number;
+  recentLendings: LendingPopulated[];
+}
+

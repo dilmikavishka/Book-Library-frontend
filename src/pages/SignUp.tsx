@@ -20,7 +20,6 @@ export default function SignUp() {
     email: "",
     password: "",
     confirmPassword: "",
-    agreeToTerms: false,
   })
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
@@ -33,17 +32,28 @@ export default function SignUp() {
       return
     }
 
-    if (!formData.agreeToTerms) {
-      alert("Please agree to the terms and conditions")
+    const response = await fetch("http://localhost:5000/api/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          name: `${formData.firstName}  ${formData.lastName}`,
+          role: "admin", 
+        }),
+    });
+
+    if (!response.ok) {
+      alert("Registration failed. Please try again.")
       return
     }
 
     setIsLoading(true)
 
-    // Simulate API call
     setTimeout(() => {
       setIsLoading(false)
-      // Navigate to sign in page after successful registration
       navigate("/signin")
     }, 2000)
   }

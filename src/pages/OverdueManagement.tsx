@@ -70,7 +70,7 @@ export default function LendingTable() {
       return;
     }
     alert("Notification sent successfully.");
-    fetchLendings(); // Refresh list
+    fetchLendings();
   };
 
   const handleContactReader = (readerName: string) => {

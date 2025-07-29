@@ -2,14 +2,39 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Button } from "../components/ui/button"
 import { BookIcon, Users, BookOpen, AlertTriangle, Plus } from "lucide-react"
 import { Link } from "react-router-dom"
+import { getDashboardData } from "@/service/dashboardService"
+import { useEffect, useState } from "react"
+import type { DashboardData } from "@/types"
 
 export default function DashboardHome() {
+  const [data, setData] = useState<DashboardData>({
+    totalBooks: 0,
+    totalReaders: 0,
+    totalLendings: 0,
+    overdueLendings: 0,
+    recentLendings: [],
+  });
+
+useEffect(() => {
+  async function fetchData() {
+    try {
+      const response = await getDashboardData();
+      console.log("Dashboard API response:", response);
+      setData(response);
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+    }
+  }
+  fetchData();
+}, []);
+
+
   const stats = [
-    { title: "Total Books", value: "1,234", icon: BookIcon, color: "bg-blue-500" },
-    { title: "Total Readers", value: "567", icon: Users, color: "bg-green-500" },
-    { title: "Books Lent Out", value: "89", icon: BookOpen, color: "bg-yellow-500" },
-    { title: "Overdue Books", value: "12", icon: AlertTriangle, color: "bg-red-500" },
-  ]
+    { title: "Total Books", value: data.totalBooks || 0, icon: BookIcon, color: "bg-blue-500" },
+    { title: "Total Readers", value: data.totalReaders || 0, icon: Users, color: "bg-green-500" },
+    { title: "Books Lent Out", value: data.totalLendings || 0, icon: BookOpen, color: "bg-yellow-500" },
+    { title: "Overdue Books", value: data.overdueLendings || 0, icon: AlertTriangle, color: "bg-red-500" },
+  ];
 
   return (
     <div className="space-y-6">
@@ -17,7 +42,7 @@ export default function DashboardHome() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => {
-          const Icon = stat.icon
+          const Icon = stat.icon;
           return (
             <Card key={index}>
               <CardContent className="p-6">
@@ -32,7 +57,7 @@ export default function DashboardHome() {
                 </div>
               </CardContent>
             </Card>
-          )
+          );
         })}
       </div>
 
@@ -43,22 +68,30 @@ export default function DashboardHome() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-sm">John Doe returned "The Great Gatsby"</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <span className="text-sm">New reader "Alice Brown" registered</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                <span className="text-sm">"1984" is now overdue for Jane Smith</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                <span className="text-sm">Charlie Wilson borrowed "Pride and Prejudice"</span>
-              </div>
+              {data.recentLendings.length === 0 ? (
+                <p className="text-sm text-gray-500">No recent activity found.</p>
+              ) : (
+                data.recentLendings.map((lending) => {
+                  const { _id, bookId, readerId, status } = lending;
+                  const statusColor =
+                    status === "borrowed"
+                      ? "bg-yellow-500"
+                      : status === "returned"
+                      ? "bg-green-500"
+                      : status === "overdue"
+                      ? "bg-red-500"
+                      : "bg-gray-500";
+
+                  return (
+                    <div key={_id} className="flex items-center space-x-3">
+                      <div className={`w-2 h-2 rounded-full ${statusColor}`}></div>
+                      <span className="text-sm">
+                        {readerId.name} {status === "returned" ? "returned" : "borrowed"} "{bookId.title}"
+                      </span>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </CardContent>
         </Card>
@@ -98,5 +131,5 @@ export default function DashboardHome() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

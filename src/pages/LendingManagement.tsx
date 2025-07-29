@@ -49,10 +49,12 @@ export default function LendingManagement() {
   const [allReaders, setAllReaders] = useState<Reader[]>([]);
   const [dueDate, setDueDate] = useState("");
 
-  // Edit modal states
+
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<LendingPopulated | null>(null);
   const [newStatus, setNewStatus] = useState("");
+
+
 
 
   useEffect(() => {
@@ -114,8 +116,6 @@ export default function LendingManagement() {
       alert("No lending record selected.");
       return;
     }
-
-
 
     try {
       const response = await updateLending(selectedRecord._id, {

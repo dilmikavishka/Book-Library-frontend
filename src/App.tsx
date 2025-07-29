@@ -15,15 +15,13 @@ export default function App() {
         <Router>
 
             <Routes>
-                {/* Public Routes */}
+
                 <Route path="/" element={<SignIn />} />
                 <Route path="/signin" element={<SignIn />} />
                 <Route path="/signup" element={<SignUp />} />
 
-                {/* Protected Routes */}
-                <Route
-                    path="/dashboard"
-                    element={
+
+                <Route path="/dashboard" element={
                         <ProtectedRoute>
                             <Layout />
                         </ProtectedRoute>
@@ -35,6 +33,7 @@ export default function App() {
                     <Route path="lending" element={<LendingManagement />} />
                     <Route path="overdue" element={<OverdueManagement />} />
                 </Route>
+
             </Routes>
         </Router>
     );

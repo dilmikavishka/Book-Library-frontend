@@ -27,7 +27,6 @@ export default function SignIn() {
     setIsLoading(true);
 
     try {
-      // Call your real API here, e.g. using fetch or axios:
       const response = await fetch("http://localhost:5000/api/users/login", {
         method: "POST",
         headers: {
@@ -45,14 +44,15 @@ export default function SignIn() {
 
       const data = await response.json();
 
-      Cookies.set("accessToken", data.accessToken, { expires: 1 }); // expires in 1 day
-      Cookies.set("refreshToken", data.refreshToken, { expires: 7 }); // expires in 7 days
+      Cookies.set("accessToken", data.accessToken, { expires: 1 });
+      Cookies.set("refreshToken", data.refreshToken, { expires: 7 });
 
       setIsLoading(false);
       navigate("/dashboard");
     } catch (error ) {
-      setIsLoading(false);
-      alert("Login failed. Please check your credentials.");
+        console.error("Login error:", error);
+        setIsLoading(false);
+        alert("Login failed. Please check your credentials.");
     }
   };
 

@@ -10,7 +10,7 @@ interface TopBarProps {
 export default function TopBar({
   setSidebarOpen,
   userName = "Admin",
-  profileImageUrl = "https://i.pravatar.cc/40", // placeholder avatar
+  profileImageUrl = "https://i.pravatar.cc/40",
 }: TopBarProps) {
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">

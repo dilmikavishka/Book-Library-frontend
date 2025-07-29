@@ -7,11 +7,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog"
 import { Plus, Edit, Trash2, Search } from "lucide-react"
 import type { Reader } from "../types"
-import { sampleReaders } from "../data/sampleData"
+//import { sampleReaders } from "../data/sampleData"
 import {createReader, deleteReader, getAllReaders, updateReader} from "@/service/readerService.ts";
 
 export default function ReaderManagement() {
-  const [readers, setReaders] = useState<Reader[]>(sampleReaders)
+  const [readers, setReaders] = useState<Reader[]>([])
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [editingReader, setEditingReader] = useState<Reader | null>(null)
