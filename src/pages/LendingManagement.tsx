@@ -141,7 +141,7 @@ export default function LendingManagement() {
         <h1 className="text-3xl font-bold text-gray-900">Lending Management</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Lend a Book Form */}
+
           <Card>
             <CardHeader>
               <CardTitle>Lend a Book</CardTitle>
